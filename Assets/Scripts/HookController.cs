@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class HookController : MonoBehaviour
 {
-    public float dropSpeed = 5f; // How fast the hook moves down
-    public float riseSpeed = 3f; // How fast the hook moves back up
-    public float maxDropDistance = 5f; // How far below the boat the hook can go
+    public float dropSpeed = 7f; // How fast the hook moves down
+    public float riseSpeed = 5f; // How fast the hook moves back up
+    public float maxDropDistance = 10f; // How far below the boat the hook can go
 
     private Vector3 initialLocalPosition; // Starting position (relative to boat)
     private bool isDropping = false; // Whether the player is holding the drop key
+    private bool isReturning = false; // Whether the hook is returning to the boat
 
     void Start()
     {
@@ -50,5 +51,20 @@ public class HookController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Fish"))
+        {
+            Debug.Log("Caught a fish!");
+
+            // Destroy the caught fish
+            Destroy(other.gameObject);
+        }
+    }
+public bool IsActive()
+    {
+        return isDropping || isReturning;
     }
 }

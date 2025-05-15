@@ -2,20 +2,40 @@ using UnityEngine;
 
 public class BoatController : MonoBehaviour
 {
-    public float moveSpeed = 5f; // Speed of boat movement
-    public float xBoundary = 10f; // Limit left/right movement
-    public float zBoundary = 10f; // Limit forward/backward movement
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 500f;
+    public float xBoundary = 10f;
+    public float zBoundary = 10f;
+
+    private Vector3 movementInput;
 
     void Update()
     {
-        float horizontalInput = Input.GetAxis("Horizontal"); // A/D or Left/Right
-        float verticalInput = Input.GetAxis("Vertical"); // W/S or Up/Down
+        HandleMovement();
+        HandleRotation();
+        ClampPosition();
+    }
 
-        // Move the boat horizontally (X) and forward/backward (Z)
-        Vector3 movement = new Vector3(horizontalInput, 0, verticalInput);
-        transform.Translate(movement * moveSpeed * Time.deltaTime, Space.World);
+    private void HandleMovement()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+        movementInput = new Vector3(horizontalInput, 0, verticalInput);
 
-        // Clamp position so boat stays within area
+        transform.Translate(movementInput * moveSpeed * Time.deltaTime, Space.World);
+    }
+
+    private void HandleRotation()
+    {
+        if (movementInput != Vector3.zero)
+        {
+            Quaternion toRotation = Quaternion.LookRotation(movementInput, Vector3.up);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    private void ClampPosition()
+    {
         Vector3 clampedPosition = transform.position;
         clampedPosition.x = Mathf.Clamp(clampedPosition.x, -xBoundary, xBoundary);
         clampedPosition.z = Mathf.Clamp(clampedPosition.z, -zBoundary, zBoundary);
