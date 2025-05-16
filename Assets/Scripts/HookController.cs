@@ -4,7 +4,7 @@ public class HookController : MonoBehaviour
 {
     public float dropSpeed = 7f; // How fast the hook moves down
     public float riseSpeed = 5f; // How fast the hook moves back up
-    public float maxDropDistance = 10f; // How far below the boat the hook can go
+    public float maxDropDistance = 20f; // How far below the boat the hook can go
 
     private Vector3 initialLocalPosition; // Starting position (relative to boat)
     private bool isDropping = false; // Whether the player is holding the drop key
@@ -50,17 +50,6 @@ public class HookController : MonoBehaviour
                     transform.localPosition = initialLocalPosition; // Snap exactly to start
                 }
             }
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Fish"))
-        {
-            Debug.Log("Caught a fish!");
-
-            // Destroy the caught fish
-            Destroy(other.gameObject);
         }
     }
 public bool IsActive()

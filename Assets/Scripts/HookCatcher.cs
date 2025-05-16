@@ -12,14 +12,18 @@ public class HookCatcher : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!hookController.IsActive()) return; // Only catch when hook is active (dropping or returning)
+        //if (!hookController.IsActive()) return; // Only catch when hook is active (dropping or returning)
 
         if (other.CompareTag("Fish"))
         {
             FishBehavior fb = other.GetComponent<FishBehavior>();
             if (fb != null && !fb.isCaught)
+        
             {
                 fb.isCaught = true; // Mark the fish as caught to avoid double catching
+                Debug.Log("ScoreManager.Instance: " + (ScoreManager.Instance == null ? "NULL" : "FOUND"));
+
+                ScoreManager.Instance?.AddScore(1); // Increase score
                 Debug.Log("Fish caught!");
 
                 // Optional: disable the fish collider to prevent further collisions
@@ -28,10 +32,6 @@ public class HookCatcher : MonoBehaviour
                 {
                     fishCollider.enabled = false;
                 }
-
-                // Optional: increase score if you have a ScoreManager later
-                //ScoreManager.Instance?.AddScore(1);
-
                 // Destroy the fish object
                 Destroy(other.gameObject);
             }

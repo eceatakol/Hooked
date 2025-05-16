@@ -331,6 +331,7 @@ GameObject:
   - component: {fileID: 7029366653414339807}
   - component: {fileID: -1699618562663955986}
   - component: {fileID: 128979797473386329}
+  - component: {fileID: 7403080467400205484}
   m_Layer: 0
   m_Name: Fish_4_v1
   m_TagString: Fish
@@ -413,6 +414,19 @@ MonoBehaviour:
   moveSpeed: 0.2
   turnSpeed: 100
   changeDirectionTime: 5
+--- !u!114 &7403080467400205484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793456495386761642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbde26907bbd24a6ba5bba5b67a659e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isCaught: 0
 --- !u!1 &1842567040799132748
 GameObject:
   m_ObjectHideFlags: 0
