@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public static bool isRestarting = false;
+
     [Header("UI References")]
     public CanvasGroup startMenuGroup;
     public GameObject startMenuCanvas;
@@ -20,78 +21,50 @@ public class GameManager : MonoBehaviour
 
     private float timeRemaining;
     private bool timerRunning = false;
+    private bool isPaused = false;
 
     private void Awake()
-{
-    if (Instance == null)
     {
-        Instance = this;
-        // Don’t use DontDestroyOnLoad here — we want a fresh GameManager on scene reload.
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
-    else if (Instance != this)
-    {
-        Destroy(gameObject);
-    }
-}
 
     private void Start()
-{
-    if (PlayerPrefs.GetInt("Restarting", 0) == 1)
     {
-        PlayerPrefs.DeleteKey("Restarting"); // reset for next time
-
-        // Hide the start menu
-        if (startMenuCanvas != null) startMenuCanvas.SetActive(false);
-        if (startMenuGroup != null)
+        // If coming from Restart button
+        if (PlayerPrefs.GetInt("Restarting", 0) == 1)
         {
-            startMenuGroup.alpha = 0f;
-            startMenuGroup.interactable = false;
-            startMenuGroup.blocksRaycasts = false;
+            PlayerPrefs.DeleteKey("Restarting");
+
+            // Skip start menu
+            if (startMenuCanvas != null) startMenuCanvas.SetActive(false);
+            if (startMenuGroup != null)
+            {
+                startMenuGroup.alpha = 0f;
+                startMenuGroup.interactable = false;
+                startMenuGroup.blocksRaycasts = false;
+            }
+
+            inGameCanvas.SetActive(true);
+            endScreenCanvas.SetActive(false);
+            Time.timeScale = 1f;
+            timeRemaining = gameDuration;
+            timerRunning = true;
         }
-
-        inGameCanvas.SetActive(true);
-        endScreenCanvas.SetActive(false);
-        Time.timeScale = 1f;
-        timeRemaining = gameDuration;
-        timerRunning = true;
-    }
-    else
-    {
-        startMenuCanvas.SetActive(true);
-        inGameCanvas.SetActive(false);
-        endScreenCanvas.SetActive(false);
-        Time.timeScale = 0f;
-    }
-}
-    public void StartGame()
-    {
-        Time.timeScale = 1f;
-
-        inGameCanvas.SetActive(true);
-        timeRemaining = gameDuration;
-        timerRunning = true;
-
-        StartCoroutine(FadeOutStartMenu());
-    }
-
-    IEnumerator FadeOutStartMenu()
-    {
-        float duration = 1f;
-        float t = 0f;
-
-        while (t < duration)
+        else
         {
-            t += Time.unscaledDeltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, t / duration);
-            startMenuGroup.alpha = alpha;
-            yield return null;
+            // Normal first play
+            startMenuCanvas.SetActive(true);
+            inGameCanvas.SetActive(false);
+            endScreenCanvas.SetActive(false);
+            Time.timeScale = 0f;
         }
-
-        startMenuGroup.alpha = 0f;
-        startMenuGroup.interactable = false;
-        startMenuGroup.blocksRaycasts = false;
-
-        startMenuCanvas.SetActive(false);
     }
 
     private void Update()
@@ -121,6 +94,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void StartGame()
+    {
+        Time.timeScale = 1f;
+        inGameCanvas.SetActive(true);
+        timeRemaining = gameDuration;
+        timerRunning = true;
+        StartCoroutine(FadeOutStartMenu());
+    }
+
+    IEnumerator FadeOutStartMenu()
+    {
+        float duration = 1f;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, t / duration);
+            startMenuGroup.alpha = alpha;
+            yield return null;
+        }
+
+        startMenuGroup.alpha = 0f;
+        startMenuGroup.interactable = false;
+        startMenuGroup.blocksRaycasts = false;
+        startMenuCanvas.SetActive(false);
+    }
+
     public void EndGame()
     {
         Time.timeScale = 0f;
@@ -135,17 +136,61 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         PlayerPrefs.SetInt("Restarting", 1);
-        PlayerPrefs.Save(); // save the flag
+        PlayerPrefs.Save();
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    
-    private bool isPaused = false;
 
+    public void ReturnToMainMenu()
+    {
+        Time.timeScale = 0f;
+
+        // UI reset
+        endScreenCanvas.SetActive(false);
+        inGameCanvas.SetActive(false);
+        startMenuCanvas.SetActive(true);
+
+        if (startMenuGroup != null)
+        {
+            startMenuGroup.alpha = 1f;
+            startMenuGroup.interactable = true;
+            startMenuGroup.blocksRaycasts = true;
+        }
+
+        // Timer reset
+        timeRemaining = gameDuration;
+        timerRunning = false;
+        UpdateTimerUI();
+
+        // Reset score
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.ResetScore();
+        }
+
+        // Destroy remaining fish
+        GameObject[] allFish = GameObject.FindGameObjectsWithTag("Fish");
+        foreach (GameObject fish in allFish)
+        {
+            Destroy(fish);
+        }
+        // Reset boat position
+        GameObject boat = GameObject.Find("single boat");
+        if (boat != null)
+        {
+            BoatResetter resetter = boat.GetComponent<BoatResetter>();
+            if (resetter != null)
+            {
+                resetter.ResetBoat();
+            }
+        }
+        // Reset time scale
+        Time.timeScale = 1f;
+    }
+    
     public void TogglePause()
     {
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
     }
-
 }
