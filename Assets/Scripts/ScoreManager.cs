@@ -35,8 +35,17 @@ public class ScoreManager : MonoBehaviour
             scoreText.text = "Score: " + score;
         }
         else
+        {
+            Debug.LogWarning("scoreText is null!");
+        }
+    }
+    public void ResetScore()
+{
+    score = 0;
+
+    if (scoreText != null)
     {
-        Debug.LogWarning("scoreText is null!");
+        scoreText.text = "Score: 0";
     }
-    }
+}
 }
