@@ -44,12 +44,13 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        inGameCanvas.SetActive(true);
         Time.timeScale = 1f;
-        StartCoroutine(FadeOutStartMenu());
 
+        inGameCanvas.SetActive(true);
         timeRemaining = gameDuration;
         timerRunning = true;
+        
+        StartCoroutine(FadeOutStartMenu());
     }
 
     IEnumerator FadeOutStartMenu()
@@ -76,6 +77,8 @@ public class GameManager : MonoBehaviour
     {
         if (timerRunning)
         {
+            Debug.Log("Time left: " + timeRemaining + ", deltaTime: " + Time.deltaTime);
+            
             if (timeRemaining > 0)
             {
                 timeRemaining -= Time.deltaTime;
