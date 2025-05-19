@@ -12,28 +12,28 @@ public class HookCatcher : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        //if (!hookController.IsActive()) return; // Only catch when hook is active (dropping or returning)
+        // Optional: Uncomment this if you only want to catch during active drop/return
+        // if (!hookController.IsActive()) return;
 
         if (other.CompareTag("Fish"))
         {
             FishBehavior fb = other.GetComponent<FishBehavior>();
             if (fb != null && !fb.isCaught)
-        
             {
-                fb.isCaught = true; // Mark the fish as caught to avoid double catching
-                Debug.Log("ScoreManager.Instance: " + (ScoreManager.Instance == null ? "NULL" : "FOUND"));
+                fb.isCaught = true; // Prevent double catch
 
-                ScoreManager.Instance?.AddScore(1); // Increase score
-                Debug.Log("Fish caught!");
+                int value = fb.pointValue; // Get points from fish
+                ScoreManager.Instance?.AddScore(value); // Add correct points
+                Debug.Log($"Fish caught! Worth {value} points.");
 
-                // Optional: disable the fish collider to prevent further collisions
+                // Disable collider (optional safety)
                 Collider fishCollider = other.GetComponent<Collider>();
                 if (fishCollider != null)
                 {
                     fishCollider.enabled = false;
                 }
-                // Destroy the fish object
-                Destroy(other.gameObject);
+
+                Destroy(other.gameObject); // Remove fish
             }
         }
     }
