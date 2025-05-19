@@ -1453,6 +1453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbde26907bbd24a6ba5bba5b67a659e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointValue: 6
   isCaught: 0
 --- !u!114 &-4341348518202516173
 MonoBehaviour:
