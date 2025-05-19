@@ -1634,6 +1634,7 @@ GameObject:
   - component: {fileID: 863044750673324807}
   - component: {fileID: 275088836346814597}
   - component: {fileID: -3014731091005463206}
+  - component: {fileID: -5323567367034427918}
   m_Layer: 0
   m_Name: Fish_6_v3
   m_TagString: Fish
@@ -1651,7 +1652,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.303, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2220789977268847868}
@@ -1699,7 +1700,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.05, y: 0.06, z: 0.05}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &275088836346814597
 MonoBehaviour:
@@ -1729,6 +1730,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCaught: 0
+--- !u!114 &-5323567367034427918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5611943563504307151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.78431374}
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &5671953506682076590
 GameObject:
   m_ObjectHideFlags: 0
