@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         inGameCanvas.SetActive(true);
         timeRemaining = gameDuration;
         timerRunning = true;
-        
+
         StartCoroutine(FadeOutStartMenu());
     }
 
@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
         if (timerRunning)
         {
             Debug.Log("Time left: " + timeRemaining + ", deltaTime: " + Time.deltaTime);
-            
+
             if (timeRemaining > 0)
             {
                 timeRemaining -= Time.deltaTime;
@@ -117,5 +117,13 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    
+    private bool isPaused = false;
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+        Time.timeScale = isPaused ? 0f : 1f;
     }
 }
