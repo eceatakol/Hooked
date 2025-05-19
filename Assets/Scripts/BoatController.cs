@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class BoatController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 500f;
-    public float xBoundary = 10f;
-    public float zBoundary = 10f;
+    public float moveSpeed = 2.5f;
+    public float rotationSpeed = 400f;
+    public float xBoundary = 20f;
+    public float zBoundary = 20f;
 
     private Vector3 movementInput;
 

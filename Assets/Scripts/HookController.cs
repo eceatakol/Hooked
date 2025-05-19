@@ -4,7 +4,7 @@ public class HookController : MonoBehaviour
 {
     public float dropSpeed = 7f; // How fast the hook moves down
     public float riseSpeed = 5f; // How fast the hook moves back up
-    public float maxDropDistance = 20f; // How far below the boat the hook can go
+    public float maxDropDistance = 25f; // How far below the boat the hook can go
 
     private Vector3 initialLocalPosition; // Starting position (relative to boat)
     private bool isDropping = false; // Whether the player is holding the drop key
