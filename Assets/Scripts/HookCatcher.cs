@@ -24,6 +24,7 @@ public class HookCatcher : MonoBehaviour
 
                 int value = fb.pointValue; // Get points from fish
                 ScoreManager.Instance?.AddScore(value); // Add correct points
+                AudioManager.Instance?.PlayCatchSound();
                 Debug.Log($"Fish caught! Worth {value} points.");
 
                 // Disable collider (optional safety)
