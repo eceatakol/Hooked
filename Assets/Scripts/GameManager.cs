@@ -38,12 +38,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // If coming from Restart button
         if (PlayerPrefs.GetInt("Restarting", 0) == 1)
         {
             PlayerPrefs.DeleteKey("Restarting");
 
-            // Skip start menu
             if (startMenuCanvas != null) startMenuCanvas.SetActive(false);
             if (startMenuGroup != null)
             {
@@ -57,14 +55,17 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 1f;
             timeRemaining = gameDuration;
             timerRunning = true;
+
+            EnableGameplayScripts();
         }
         else
         {
-            // Normal first play
             startMenuCanvas.SetActive(true);
             inGameCanvas.SetActive(false);
             endScreenCanvas.SetActive(false);
             Time.timeScale = 0f;
+
+            DisableGameplayScripts(); // start clean
         }
     }
 
@@ -102,6 +103,8 @@ public class GameManager : MonoBehaviour
         timeRemaining = gameDuration;
         timerRunning = true;
         StartCoroutine(FadeOutStartMenu());
+
+        EnableGameplayScripts(); // ✅ start gameplay logic
     }
 
     IEnumerator FadeOutStartMenu()
@@ -146,7 +149,6 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
 
-        // UI reset
         endScreenCanvas.SetActive(false);
         inGameCanvas.SetActive(false);
         startMenuCanvas.SetActive(true);
@@ -158,24 +160,21 @@ public class GameManager : MonoBehaviour
             startMenuGroup.blocksRaycasts = true;
         }
 
-        // Timer reset
         timeRemaining = gameDuration;
         timerRunning = false;
         UpdateTimerUI();
 
-        // Reset score
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.ResetScore();
         }
 
-        // Destroy remaining fish
         GameObject[] allFish = GameObject.FindGameObjectsWithTag("Fish");
         foreach (GameObject fish in allFish)
         {
             Destroy(fish);
         }
-        // Reset boat position
+
         GameObject boat = GameObject.Find("single boat");
         if (boat != null)
         {
@@ -185,7 +184,8 @@ public class GameManager : MonoBehaviour
                 resetter.ResetBoat();
             }
         }
-        // Reset time scale
+
+        DisableGameplayScripts(); // ✅ freeze game logic
         Time.timeScale = 1f;
     }
 
@@ -194,6 +194,7 @@ public class GameManager : MonoBehaviour
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
     }
+
     public void ShowRules()
     {
         if (rulesPanel != null)
@@ -208,5 +209,25 @@ public class GameManager : MonoBehaviour
         {
             rulesPanel.SetActive(false);
         }
+    }
+
+    // ✅ Utility methods to control gameplay behavior
+
+    private void DisableGameplayScripts()
+    {
+        FishSpawner spawner = FindObjectOfType<FishSpawner>();
+        if (spawner != null) spawner.enabled = false;
+
+        BoatController boat = FindObjectOfType<BoatController>();
+        if (boat != null) boat.enabled = false;
+    }
+
+    private void EnableGameplayScripts()
+    {
+        FishSpawner spawner = FindObjectOfType<FishSpawner>();
+        if (spawner != null) spawner.enabled = true;
+
+        BoatController boat = FindObjectOfType<BoatController>();
+        if (boat != null) boat.enabled = true;
     }
 }
