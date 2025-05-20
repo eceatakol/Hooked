@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public CanvasGroup startMenuGroup;
     public GameObject startMenuCanvas;
+    public GameObject rulesPanel;
     public GameObject inGameCanvas;
     public TextMeshProUGUI timerText;
     public GameObject endScreenCanvas;
@@ -187,10 +188,25 @@ public class GameManager : MonoBehaviour
         // Reset time scale
         Time.timeScale = 1f;
     }
-    
+
     public void TogglePause()
     {
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0f : 1f;
+    }
+    public void ShowRules()
+    {
+        if (rulesPanel != null)
+        {
+            rulesPanel.SetActive(true);
+        }
+    }
+
+    public void HideRules()
+    {
+        if (rulesPanel != null)
+        {
+            rulesPanel.SetActive(false);
+        }
     }
 }
