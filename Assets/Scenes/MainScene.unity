@@ -179,6 +179,12 @@ MonoBehaviour:
   - {fileID: 5611943563504307151, guid: 555ac33acd7d7a3408d53e1b339664f1, type: 3}
   - {fileID: 5327944974000197623, guid: d5c332855dbf2fb4d99e7d80d2ffeff2, type: 3}
   - {fileID: 7816992470260410406, guid: 775ea8698569bbf4d966f73d07ad223e, type: 3}
+  - {fileID: 50091321011500325, guid: 5e5a8c008e57c4f708651aaf34400bc0, type: 3}
+  - {fileID: 8316305573853541754, guid: fd9bfd1b41cfd42b2bca78bc98cc088a, type: 3}
+  - {fileID: 3037787351104059400, guid: b44b9db102e8c48caa79800535e1d776, type: 3}
+  - {fileID: 7368265892016815314, guid: 7586add44edab4f7e981192ff04ba73e, type: 3}
+  - {fileID: 8507866643817179982, guid: 119f236b754664ce6977dfb9bb97c6c0, type: 3}
+  - {fileID: 1020288776808797072, guid: 52c350c3a762b4bc786e49b4c31913e3, type: 3}
   boatTransform: {fileID: 1787201656}
   spawnInterval: 2
   spawnY: -0.5
