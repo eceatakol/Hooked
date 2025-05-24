@@ -27,22 +27,21 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else if (Instance != this)
-        {
             Destroy(gameObject);
-        }
     }
 
     private void Start()
     {
+        // ✅ Uygulama her açıldığında ses ayarlarını uygula
+        ApplySoundSettings();
+
         if (PlayerPrefs.GetInt("Restarting", 0) == 1)
         {
             PlayerPrefs.DeleteKey("Restarting");
 
-            if (startMenuCanvas != null) startMenuCanvas.SetActive(false);
+            startMenuCanvas?.SetActive(false);
             if (startMenuGroup != null)
             {
                 startMenuGroup.alpha = 0f;
@@ -50,9 +49,10 @@ public class GameManager : MonoBehaviour
                 startMenuGroup.blocksRaycasts = false;
             }
 
-            inGameCanvas.SetActive(true);
-            endScreenCanvas.SetActive(false);
+            inGameCanvas?.SetActive(true);
+            endScreenCanvas?.SetActive(false);
             Time.timeScale = 1f;
+
             timeRemaining = gameDuration;
             timerRunning = true;
 
@@ -60,12 +60,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            startMenuCanvas.SetActive(true);
-            inGameCanvas.SetActive(false);
-            endScreenCanvas.SetActive(false);
+            startMenuCanvas?.SetActive(true);
+            inGameCanvas?.SetActive(false);
+            endScreenCanvas?.SetActive(false);
             Time.timeScale = 0f;
 
-            DisableGameplayScripts(); // start clean
+            DisableGameplayScripts();
         }
     }
 
@@ -87,27 +87,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateTimerUI()
+    private void UpdateTimerUI()
     {
         int seconds = Mathf.CeilToInt(timeRemaining);
         if (timerText != null)
-        {
             timerText.text = "Time: " + seconds;
-        }
     }
 
     public void StartGame()
     {
         Time.timeScale = 1f;
-        inGameCanvas.SetActive(true);
+        inGameCanvas?.SetActive(true);
+
         timeRemaining = gameDuration;
         timerRunning = true;
+
         StartCoroutine(FadeOutStartMenu());
 
-        EnableGameplayScripts(); // ✅ start gameplay logic
+        EnableGameplayScripts();
+
+        // ✅ Oyun başlarken ayarları uygula
+        ApplySoundSettings();
     }
 
-    IEnumerator FadeOutStartMenu()
+    private IEnumerator FadeOutStartMenu()
     {
         float duration = 1f;
         float t = 0f;
@@ -116,25 +119,29 @@ public class GameManager : MonoBehaviour
         {
             t += Time.unscaledDeltaTime;
             float alpha = Mathf.Lerp(1f, 0f, t / duration);
-            startMenuGroup.alpha = alpha;
+            if (startMenuGroup != null)
+                startMenuGroup.alpha = alpha;
+
             yield return null;
         }
 
-        startMenuGroup.alpha = 0f;
-        startMenuGroup.interactable = false;
-        startMenuGroup.blocksRaycasts = false;
-        startMenuCanvas.SetActive(false);
+        if (startMenuGroup != null)
+        {
+            startMenuGroup.alpha = 0f;
+            startMenuGroup.interactable = false;
+            startMenuGroup.blocksRaycasts = false;
+        }
+
+        startMenuCanvas?.SetActive(false);
     }
 
     public void EndGame()
     {
         Time.timeScale = 0f;
-        endScreenCanvas.SetActive(true);
+        endScreenCanvas?.SetActive(true);
 
         if (finalScoreText != null && ScoreManager.Instance != null)
-        {
             finalScoreText.text = "Your Score: " + ScoreManager.Instance.score;
-        }
     }
 
     public void RestartGame()
@@ -149,9 +156,9 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
 
-        endScreenCanvas.SetActive(false);
-        inGameCanvas.SetActive(false);
-        startMenuCanvas.SetActive(true);
+        endScreenCanvas?.SetActive(false);
+        inGameCanvas?.SetActive(false);
+        startMenuCanvas?.SetActive(true);
 
         if (startMenuGroup != null)
         {
@@ -164,29 +171,19 @@ public class GameManager : MonoBehaviour
         timerRunning = false;
         UpdateTimerUI();
 
-        if (ScoreManager.Instance != null)
-        {
-            ScoreManager.Instance.ResetScore();
-        }
+        ScoreManager.Instance?.ResetScore();
 
-        GameObject[] allFish = GameObject.FindGameObjectsWithTag("Fish");
-        foreach (GameObject fish in allFish)
-        {
+        foreach (var fish in GameObject.FindGameObjectsWithTag("Fish"))
             Destroy(fish);
-        }
 
-        GameObject boat = GameObject.Find("single boat");
-        if (boat != null)
-        {
-            BoatResetter resetter = boat.GetComponent<BoatResetter>();
-            if (resetter != null)
-            {
-                resetter.ResetBoat();
-            }
-        }
+        var boat = GameObject.Find("single boat");
+        boat?.GetComponent<BoatResetter>()?.ResetBoat();
 
-        DisableGameplayScripts(); // ✅ freeze game logic
+        DisableGameplayScripts();
         Time.timeScale = 1f;
+
+        // ✅ Menüye dönünce de ses ayarlarını yeniden uygula
+        ApplySoundSettings();
     }
 
     public void TogglePause()
@@ -197,37 +194,40 @@ public class GameManager : MonoBehaviour
 
     public void ShowRules()
     {
-        if (rulesPanel != null)
-        {
-            rulesPanel.SetActive(true);
-        }
+        rulesPanel?.SetActive(true);
     }
 
     public void HideRules()
     {
-        if (rulesPanel != null)
-        {
-            rulesPanel.SetActive(false);
-        }
+        rulesPanel?.SetActive(false);
     }
-
-    // ✅ Utility methods to control gameplay behavior
 
     private void DisableGameplayScripts()
+{
+    FishSpawner spawner = FindFirstObjectByType<FishSpawner>();
+    if (spawner != null) spawner.enabled = false;
+
+    BoatController boat = FindFirstObjectByType<BoatController>();
+    if (boat != null) boat.enabled = false;
+}
+
+private void EnableGameplayScripts()
+{
+    FishSpawner spawner = FindFirstObjectByType<FishSpawner>();
+    if (spawner != null) spawner.enabled = true;
+
+    BoatController boat = FindFirstObjectByType<BoatController>();
+    if (boat != null) boat.enabled = true;
+}
+
+    private void ApplySoundSettings()
     {
-        FishSpawner spawner = FindObjectOfType<FishSpawner>();
-        if (spawner != null) spawner.enabled = false;
+        if (AudioManager.Instance == null) return;
 
-        BoatController boat = FindObjectOfType<BoatController>();
-        if (boat != null) boat.enabled = false;
-    }
+        bool musicEnabled = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
+        bool sfxEnabled = PlayerPrefs.GetInt("SFXEnabled", 1) == 1;
 
-    private void EnableGameplayScripts()
-    {
-        FishSpawner spawner = FindObjectOfType<FishSpawner>();
-        if (spawner != null) spawner.enabled = true;
-
-        BoatController boat = FindObjectOfType<BoatController>();
-        if (boat != null) boat.enabled = true;
+        AudioManager.Instance.ApplyMusicSetting(musicEnabled);
+        AudioManager.Instance.ApplySfxSetting(sfxEnabled);
     }
 }

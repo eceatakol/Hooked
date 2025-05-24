@@ -13,18 +13,10 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton pattern
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-
-            // Load player preferences
-            bool musicEnabled = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
-            bool sfxEnabled = PlayerPrefs.GetInt("SFXEnabled", 1) == 1;
-
-            ApplyMusicSetting(musicEnabled);
-            ApplySfxSetting(sfxEnabled);
         }
         else
         {
@@ -32,40 +24,56 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // Called when the Music toggle changes
-        public void ApplyMusicSetting(bool enabled)
+    public void ApplyMusicSetting(bool enabled)
     {
-        if (musicSource == null) return;
+        Debug.Log("ApplyMusicSetting: " + enabled);
 
-        musicSource.loop = true; // Make sure it stays looping
+        if (musicSource == null)
+        {
+            Debug.LogError("❌ musicSource not assigned!");
+            return;
+        }
+
+        if (musicSource.clip == null)
+        {
+            Debug.LogError("❌ musicSource.clip is null!");
+            return;
+        }
+
+        musicSource.loop = true;
 
         if (enabled)
         {
-            if (!musicSource.isPlaying && musicSource.clip != null)
+            // Zaten oynuyorsa yeniden başlatma
+            if (!musicSource.isPlaying)
             {
-                musicSource.Play(); // Resume or restart playback
+                musicSource.Play();
+                Debug.Log("🎵 Music PLAYED");
             }
         }
         else
         {
-            musicSource.Stop(); // Stop playback
+            if (musicSource.isPlaying)
+            {
+                musicSource.Stop();
+                Debug.Log("🔇 Music STOPPED");
+            }
         }
     }
 
-    // Called when the SFX toggle changes
     public void ApplySfxSetting(bool enabled)
     {
-        if (sfxSource == null) return;
-        sfxSource.mute = !enabled; // Preferred to .enabled = false for safety
+        if (sfxSource != null)
+        {
+            sfxSource.mute = !enabled;
+        }
     }
 
-    // Called when fish is caught
     public void PlayCatchSound()
     {
         PlaySFX(catchSFX);
     }
 
-    // General-purpose SFX play
     public void PlaySFX(AudioClip clip)
     {
         if (sfxSource != null && clip != null && !sfxSource.mute)
@@ -73,4 +81,18 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip);
         }
     }
+    
+    private void Update()
+{
+    if (Input.GetKeyDown(KeyCode.M))
+    {
+        Debug.Log("🎛️ M key pressed: Toggling music");
+        bool current = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
+        bool next = !current;
+        PlayerPrefs.SetInt("MusicEnabled", next ? 1 : 0);
+        PlayerPrefs.Save();
+
+        ApplyMusicSetting(next);
+    }
+}
 }
