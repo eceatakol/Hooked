@@ -34,7 +34,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // ✅ Uygulama her açıldığında ses ayarlarını uygula
         ApplySoundSettings();
 
         if (PlayerPrefs.GetInt("Restarting", 0) == 1)
@@ -182,7 +181,6 @@ public class GameManager : MonoBehaviour
         DisableGameplayScripts();
         Time.timeScale = 1f;
 
-        // ✅ Menüye dönünce de ses ayarlarını yeniden uygula
         ApplySoundSettings();
     }
 

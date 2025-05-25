@@ -185,6 +185,8 @@ MonoBehaviour:
   - {fileID: 7368265892016815314, guid: 7586add44edab4f7e981192ff04ba73e, type: 3}
   - {fileID: 8507866643817179982, guid: 119f236b754664ce6977dfb9bb97c6c0, type: 3}
   - {fileID: 1020288776808797072, guid: 52c350c3a762b4bc786e49b4c31913e3, type: 3}
+  goldenFishPrefab: {fileID: 2787055601698196156, guid: 88a76506694184585b6bf542da3a937c, type: 3}
+  goldenFishSpawned: 0
   boatTransform: {fileID: 1787201656}
   spawnInterval: 2
   spawnY: -0.5
@@ -715,7 +717,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.001, z: 0}
-  m_LocalScale: {x: 21, y: 1, z: 21}
+  m_LocalScale: {x: 5, y: 1, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
