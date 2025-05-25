@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI timerText;
     public GameObject endScreenCanvas;
     public TextMeshProUGUI finalScoreText;
+    public TextMeshProUGUI highScoreText;
 
     [Header("Game Settings")]
     public float gameDuration = 60f;
@@ -134,13 +135,23 @@ public class GameManager : MonoBehaviour
         startMenuCanvas?.SetActive(false);
     }
 
-    public void EndGame()
+   public void EndGame()
     {
         Time.timeScale = 0f;
         endScreenCanvas?.SetActive(true);
 
-        if (finalScoreText != null && ScoreManager.Instance != null)
-            finalScoreText.text = "Your Score: " + ScoreManager.Instance.score;
+        if (ScoreManager.Instance != null)
+        {
+            ScoreManager.Instance.EvaluateAndSaveHighScore();
+
+            // ✅ Update final score text
+            if (finalScoreText != null)
+                finalScoreText.text = "Your Score: " + ScoreManager.Instance.score;
+
+            // ✅ Update high score text
+            if (highScoreText != null)
+                highScoreText.text = "High Score: " + PlayerPrefs.GetInt("HighScore", 0);
+        }
     }
 
     public void RestartGame()

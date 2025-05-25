@@ -1,18 +1,20 @@
 using UnityEngine;
-using TMPro; // Needed for TextMeshPro
+using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    public static ScoreManager Instance; // Singleton
+    public static ScoreManager Instance;
     public TextMeshProUGUI scoreText;
 
     public int score = 0;
+    private int highScore = 0;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            highScore = PlayerPrefs.GetInt("HighScore", 0);
         }
         else
         {
@@ -23,29 +25,36 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
+        UpdateScoreText();
+    }
 
+    public void ResetScore()
+    {
+        score = 0;
         UpdateScoreText();
     }
 
     private void UpdateScoreText()
     {
-        Debug.Log("Updating score text");
         if (scoreText != null)
         {
             scoreText.text = "Score: " + score;
         }
-        else
+    }
+
+    // ✅ Call this when the game ends
+    public void EvaluateAndSaveHighScore()
+    {
+        if (score > highScore)
         {
-            Debug.LogWarning("scoreText is null!");
+            highScore = score;
+            PlayerPrefs.SetInt("HighScore", highScore);
+            PlayerPrefs.Save();
         }
     }
-    public void ResetScore()
-{
-    score = 0;
 
-    if (scoreText != null)
+    public int GetHighScore()
     {
-        scoreText.text = "Score: 0";
+        return highScore;
     }
-}
 }
